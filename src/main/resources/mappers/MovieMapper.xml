@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.luo.cv.mapper.MovieMapper">
+    <!--
+    // 批量保存电影信息
+    public Integer insertMovies(List<Movie> movies);
+    -->
+    <insert id="insertMovies" parameterType="java.util.List">
+        REPLACE INTO movies
+        (id, cover, cover_x, cover_y, is_new, playable, rate, title, url)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.id}, #{item.cover}, #{item.cover_x}, #{item.cover_y},
+            #{item.is_new}, #{item.playable}, #{item.rate}, #{item.title},#{item.url}
+            )
+        </foreach>
+    </insert>
+
+    <!--
+    // 删除所有电影信息
+    public Integer deleteMovies();
+    -->
+    <update id="deleteMovies">
+        TRUNCATE TABLE movies
+    </update>
+
+    <!--
+    // 批量保存评论信息
+    public Integer insertComments(List<Comment> comments);
+    -->
+    <insert id="insertComments" parameterType="java.util.List">
+        INSERT INTO comments
+        (m_id, comment_time, recommend_level, votes, comment)
+        VALUES
+        <foreach collection="comments" item="item" separator=",">
+            (#{item.m_id}, #{item.comment_time}, #{item.recommend_level}, #{item.votes}, #{item.comment})
+        </foreach>
+    </insert>
+
+    <!--
+    // 根据id查找评论信息
+    public List<Comment> selectCommentsById(String id);
+    -->
+    <select id="selectCommentsById" resultType="com.luo.cv.bean.Comment">
+        SELECT id, m_id, comment_time, recommend_level, votes, comment
+        FROM comments
+        WHERE m_id = #{m_id}
+        ORDER BY votes DESC
+    </select>
+
+    <!--
+    // 删除所有评论
+    public Integer deleteComments();
+    -->
+    <update id="deleteComments">
+        TRUNCATE TABLE comments
+    </update>
+</mapper>
